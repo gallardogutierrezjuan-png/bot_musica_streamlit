@@ -1,0 +1,47 @@
+/* Estilos generales */
+.main {
+    background-color: #0e1117;
+}
+
+.stButton>button {
+    width: 100%;
+    background-color: #1ed760;
+    color: #000000;
+    font-weight: bold;
+    border-radius: 8px;
+    border: none;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.stButton>button:hover {
+    background-color: #1fdf64;
+    color: #000000;
+    transform: translateY(-2px);
+}
+
+/* Tarjeta de canción */
+.song-card {
+    background-color: #1e222d;
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 0.8rem;
+    border-left: 4px solid #1ed760;
+}
+
+.song-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.song-artist {
+    font-size: 0.95rem;
+    color: #b3b3b3;
+}
+
+.song-meta {
+    font-size: 0.8rem;
+    color: #888888;
+    margin-top: 0.3rem;
+}
