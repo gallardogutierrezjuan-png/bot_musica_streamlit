@@ -1,16 +1,27 @@
 import asyncio
 import os
 import tempfile
+import streamlit as st
 from dotenv import load_dotenv
 from parser_utils import parse_vkm_results
 from telethon import TelegramClient
+from telethon.sessions import StringSession
 
 load_dotenv()
 
-API_ID = os.getenv("TELEGRAM_API_ID")
-API_HASH = os.getenv("TELEGRAM_API_HASH")
 
-# Nombre de usuario exacto de la captura
+# Función para leer las claves tanto localmente como desde los Secrets de Streamlit Cloud
+def get_secret(key):
+    if hasattr(st, "secrets") and key in st.secrets:
+        return st.secrets[key]
+    if key in os.environ and os.environ[key]:
+        return os.environ[key]
+    return None
+
+
+API_ID = get_secret("TELEGRAM_API_ID")
+API_HASH = get_secret("TELEGRAM_API_HASH")
+SESSION_STRING = get_secret("TELEGRAM_STRING_SESSION")
 BOT_USERNAME = "vkmusbot"
 
 _client = None
@@ -19,7 +30,25 @@ _client = None
 def get_telegram_client():
     global _client
     if _client is None:
-        _client = TelegramClient("sesion_prueba", int(API_ID), API_HASH)
+        if not API_ID or not API_HASH:
+            raise ValueError(
+                "No se encontraron las credenciales TELEGRAM_API_ID o"
+                " TELEGRAM_API_HASH en los Secrets de Streamlit."
+            )
+
+        # Convertir API_ID a entero de forma segura
+        api_id_int = int(str(API_ID).strip())
+        api_hash_str = str(API_HASH).strip()
+
+        if SESSION_STRING:
+            _client = TelegramClient(
+                StringSession(str(SESSION_STRING).strip()),
+                api_id_int,
+                api_hash_str,
+            )
+        else:
+            _client = TelegramClient("sesion_prueba", api_id_int, api_hash_str)
+
     return _client
 
 
